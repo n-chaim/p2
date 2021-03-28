@@ -1,0 +1,38 @@
+package main;
+
+public class OnlineStudent extends Student {
+
+    private boolean mTechfee;
+
+    /*
+    *subclass ctor calling superclass ctor
+    */
+    public OnlineStudent(String pId, String pFirstName, String pLastName) {
+        super(pId, pFirstName, pLastName);
+    }
+    /*
+    *Online students own method to calculate tuition
+    */
+    @Override
+    public void calcTuition() {
+        double t = getCredits() * TuitionConstants.ONLINE_CREDIT_RATE;
+        if (getTechFee() == true) {
+            t = t + TuitionConstants.ONLINE_TECH_FEE;
+        }
+        setTuition(t);
+    }
+
+    /*
+    *accessor method for the instance variables
+    */
+    public boolean getTechFee() {
+        return mTechfee;
+    }
+
+    /*
+    mutator method for the instnace variables
+    */
+    public void setTechFee(boolean pTechFee) {
+        mTechfee = pTechFee;
+    }
+}
