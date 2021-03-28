@@ -1,0 +1,116 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Scanner;
+import main.OnCampusStudent;
+import main.OnlineStudent;
+import main.Student;
+import main.Sorter;
+
+public class Main {
+
+    public static void main(String[] args) throws FileNotFoundException {
+        new Main().run();
+    }
+    /*
+     *calls other methods and handles exceptions
+     */
+
+    private void run() throws FileNotFoundException {
+        ArrayList<Student> studentList = new ArrayList<>(null);
+        try {
+            studentList = readFile();
+        } catch (FileNotFoundException pException) {
+            System.out.println("Sorry, could not open 'p02-student.txt' for reading. Stopping");
+            System.exit(-1);
+        }
+        calcTuition(studentList);
+        Sorter.insertionSort(studentList, Sorter.SORT_ASCENDING);
+        try {
+            writeFile(studentList);
+        } catch (FileNotFoundException pException) {
+            System.out.println("Sorry could not open 'p02-tuition.txt' for writing. Stopping");
+            System.exit(-1);
+        }
+    }
+
+    /*
+     *calculates tuition for each student in array
+     */
+    private void calcTuition(ArrayList<Student> pStudentList) {
+        for (Student student : pStudentList) {
+            student.calcTuition();
+        }
+    }
+
+    /**
+     * Reads student info from the file p02-students.txt
+     */
+    private ArrayList<Student> readFile() throws FileNotFoundException {
+        ArrayList<Student> studentList = new ArrayList<>();
+        Scanner in = new Scanner(new File("p02-students.txt"));
+        while (in.hasNext() == true) {
+            String studentType = in.next();
+            if (studentType.equals("C") == true) {
+                studentList.add(readOnCampusStudent(in));
+            } else {
+                studentList.add(readOnlineStudent(in));
+            }
+        }
+        in.close();
+        return studentList;
+    }
+    /*
+     *reads info for on campus students
+     */
+
+    private OnCampusStudent readOnCampusStudent(Scanner pIn) {
+        String id = pIn.next();
+        String lName = pIn.next();
+        String fName = pIn.next();
+        OnCampusStudent student = new OnCampusStudent(id, lName, fName);
+        String res = pIn.next();
+        double fee = pIn.nextDouble();
+        int credits = pIn.nextInt();
+        if (res.equals("R") == true) {
+            student.setResidency(OnCampusStudent.RESIDENT);
+        } else {
+            student.setResidency(OnCampusStudent.NON_RESIDENT);
+        }
+        student.setProgramFee(fee);
+        student.setCredits(credits);
+        return student;
+    }
+    /*
+     *reads info for online students
+     */
+
+    private OnlineStudent readOnlineStudent(Scanner pIn) {
+        String id = pIn.next();
+        String lName = pIn.next();
+        String fName = pIn.next();
+        OnlineStudent student = new OnlineStudent(id, lName, fName);
+        String fee = pIn.next();
+        int credits = pIn.nextInt();
+        if (fee.equals("T") == true) {
+            student.setTechFee(true);
+        } else {
+            student.setTechFee(false);
+        }
+        student.setCredits(credits);
+        return student;
+    }
+    /*
+     *writes output
+     */
+
+    private void writeFile(ArrayList<Student> pStudentList) throws FileNotFoundException {
+        PrintWriter out = new PrintWriter(new File("p02-tuition.txt"));
+        for (Student student : pStudentList) {
+            out.printf("%-16d %-20d %-15d %8d.2f\n", student.getId(), student.getLastName(), student.getFirstName(), student.getTuition());
+        }
+        out.close();
+    }
+
+}
