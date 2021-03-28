@@ -1,0 +1,41 @@
+package main;
+
+import java.util.ArrayList;
+import main.Student;
+
+public class Sorter {
+
+    public static final int SORT_ASCENDING = 0;
+    public static final int SORT_DESCENDING = 1;
+    /*
+    *will sort list into ascending or descending order
+    */
+    public static void insertionSort(ArrayList<Student> pList, int pOrder) {
+        for (int i = 1; i < pList.size(); ++i) {
+            for (int j = i; keepMoving(pList, j, pOrder); --j) {
+                swap(pList, j, j - 1);
+            }
+        }
+    }
+    /*
+    *keeps moving an element if an element is not yet at its proper location
+    */
+    private static boolean keepMoving(ArrayList<Student> pList, int pIndex, int pOrder) {
+        if (pIndex < 1) {
+            return false;
+        }
+        Student after = pList.get(pIndex);
+        Student before = pList.get(pIndex - 1);
+        return (pOrder == SORT_ASCENDING)
+                ? after.compareTo(before) < 0
+                : after.compareTo(before) > 0;
+    }
+    /*
+    *swaps the elements
+    */
+    private static void swap(ArrayList<Student> pList, int pIndex1, int pIndex2) {
+        Student temp = pList.get(pIndex1);
+        pList.set(pIndex1, pList.get(pIndex2));
+        pList.set(pIndex2, temp);
+    }
+}
